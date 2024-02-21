@@ -1,0 +1,44 @@
+variables: _variables_opencd.yaml
+tasks:
+  opencd-free:
+    html_rss_plus:
+      urls: 
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=0
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=1
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=2
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=3
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=4
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=5
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=6
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=7
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=8
+      user-agent: '{? headers.user_agent ?}'
+      cookie: '{? headers.cookie ?}'
+      params: '{? headers.params ?}'
+      interval: 2
+      root_element_selector: '#form_torrent > table > tbody > tr:not(:first-child)'
+      fields:
+        title:
+          element_selector: 'a[href*="plugin_details.php"]'
+          attribute: title
+        url:
+          element_selector: 'a[href*="download.php"]'
+          attribute: href
+        promotion:
+          element_selector: 'img[class*="pro_free"]'
+          attribute: alt
+        deadline:
+          element_selector: 'div:has(>img[class*="pro_free"])+span'
+          attribute: title
+        progress:
+          element_selector: 'div.progress'
+          attribute: class
+    no_entries_ok: yes
+    if:
+      - progress!='': reject
+      - not promotion in ['Free','2X Free']: reject
+      - promotion in ['Free','2X Free']:
+          if: 
+            - "deadline|parsedate - now < timedelta(hours=2)": reject
+            - "deadline|parsedate - now > timedelta(hours=2)": accept
+    download: '{? download_path ?}'

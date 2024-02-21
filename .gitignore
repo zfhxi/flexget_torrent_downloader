@@ -1,0 +1,6 @@
+downloads
+_variables*
+!_variables_example*
+*.log
+*.sqlite
+temp
