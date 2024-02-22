@@ -1,12 +1,13 @@
-variables: _variables_pterclub.yaml
+variables: _variables_leavesred.yaml
 templates:
   global:
     include: _templates_global.yaml
 tasks:
-  pterclub-official-free:
+  leavesred-official-free:
     html_rss_plus:
       urls: 
-        - https://pterclub.com/torrents.php?tag_internal=yes # 官种
+        - https://leaves.red/special.php?tag_id=3 # 官种
+        - https://leaves.red/special.php?inclbookmarked=0&incldead=1&spstate=0&tag_id=3&page=1
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
@@ -14,7 +15,7 @@ tasks:
       root_element_selector: 'table.torrents tbody > tr:not(:first-child)'
       fields:
         title:
-          element_selector: 'a[href*="details.php"]'
+          element_selector: 'table.torrentname a[href^="details.php"]'
           attribute: title
         url:
           element_selector: 'a[href*="download.php"]'
@@ -22,24 +23,28 @@ tasks:
         promotion:
           element_selector: 'img[class*="pro_free"]'
           attribute: alt
+        needpay:
+          element_selector: 'span[title="收费种子"]'
+          attribute: title
         deadline:
-          element_selector: 'div:has(>a>img[class*="pro_free"])>b>span'
+          element_selector: 'table.torrentname img[class*="pro_free"]+font>span'
           attribute: title
         progress: # 注意该值是一个列表
-          element_selector: 'img[class*="progbar"]'
+          element_selector: 'div[title^="seeding"]'
           attribute: class
     no_entries_ok: yes
-    limit_new: 10
+    limit_new: 50
     if:
+      - needpay!='': reject
       - progress!='': reject
-      - not promotion in ['Free','2X Free']: reject
-      - promotion in ['Free','2X Free']:
+      - not promotion in ['Free']: reject
+      - promotion in ['Free']:
           if:
             - deadline=='': reject
             - deadline!='':
                 if: 
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=24)': reject
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=24)': accept
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=5)': reject
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=5)': accept
 
     template:
       - global

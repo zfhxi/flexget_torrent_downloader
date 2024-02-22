@@ -6,4 +6,3 @@ _*.yaml
 temp
 **/__pycache__
 **/*.pyc
-*ptvicomo*

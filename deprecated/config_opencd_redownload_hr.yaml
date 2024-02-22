@@ -1,3 +1,4 @@
+# 重新下已完成但HR没合格的种子
 variables: _variables_opencd.yaml
 tasks:
   opencd-free:
@@ -5,10 +6,15 @@ tasks:
       urls: 
         - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=0
         - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=1
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=2
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=3
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=4
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=5
+        - https://open.cd/torrents.php?inclbookmarked=0&incldead=1&spstate=0&option-torrents=0&page=6
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
-      url_interval: 2
+      url_interval: 1
       root_element_selector: '#form_torrent > table > tbody > tr:not(:first-child)'
       fields:
         title:
@@ -17,26 +23,14 @@ tasks:
         url:
           element_selector: 'a[href*="download.php"]'
           attribute: href
-        promotion:
-          element_selector: 'img[class*="pro_free"]'
-          attribute: alt
-        deadline:
-          element_selector: 'div:has(>img[class*="pro_free"])+span'
-          attribute: title
         progress: # 注意该值是一个列表
-          element_selector: 'div.progress'
+          element_selector: 'div.progress_completed_hr'
           attribute: class
     no_entries_ok: yes
     if:
-      - progress!='': reject
-      - not promotion in ['Free','2X Free']: reject
-      - promotion in ['Free','2X Free']:
-          if:
-            - deadline=='': reject
-            - deadline!='':
-                if: 
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=6)': reject
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=6)': accept
+      - "not 'progress_completed_hr' in progress": reject
+      - "'progress_completed_hr' in progress": accept
 
-    template:
-      - global
+    # template:
+      # - global
+    download: ./downloads

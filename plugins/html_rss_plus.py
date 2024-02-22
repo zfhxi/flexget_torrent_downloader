@@ -27,7 +27,6 @@ class PluginHtmlRssPlus:
             'cookie': {'type': 'string'},
             'params': {'type': 'string'},
             'url_interval': {'type': 'integer'},
-            'torrent_limited': {'type': 'integer'},
             "root_element_selector": {'type': 'string'},
             'fields': {
                 'type': 'object',
@@ -60,7 +59,6 @@ class PluginHtmlRssPlus:
         config.setdefault('cookie', '')
         config.setdefault('params', '')
         config.setdefault('url_interval', 1)
-        config.setdefault('torrent_limited', 50)
         config.setdefault('root_element_selector', '')
         config.setdefault('fields', {})
         return config
@@ -74,7 +72,6 @@ class PluginHtmlRssPlus:
         fields = config['fields']
         params = config['params']
         url_interval = config['url_interval']
-        torrent_limited = config['torrent_limited']
         headers = {
             'accept-encoding': 'gzip, deflate, br',
             'user-agent': user_agent
@@ -93,8 +90,6 @@ class PluginHtmlRssPlus:
                     'Unable to download the Html for task {} ({}): {}'.format(task.name, url, e)
                 )
             elements = get_soup(content).select(root_element_selector)
-            if torrent_limited!=-1:
-                elements = elements[:torrent_limited]
             total_torrents = len(elements)
             print(f"Total torrents: {total_torrents}!")
             if total_torrents == 0:

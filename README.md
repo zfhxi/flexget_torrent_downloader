@@ -2,34 +2,50 @@
 
 ## 说明
 基于[madwind/flexget_qbittorrent_mod](https://github.com/madwind/flexget_qbittorrent_mod)删改后的免费种下载器。  
-**只有下载免费种子到本地的功能！**
+**只有下载免费种子到本地的功能！**，可根据自己需求修改！
 
 ### 适用场景
 可能受以下条件限制，需要下载免费种子到本地：
 - 不会刷流
 - vt不支持某些站点刷流
 - 想拉取某个站点的免费种子到本地
+- 想批量下载官种
 
 **目前适配站点及种子下载条件**:  
+
+- agsvpt(待修复，目前站免未做充分测试)
+    - 需要手动替换官种链接
+    - 种子状态非做种期（没被下载过）
+    - 种子具有`Free`、`2xFree`标记
+    - 种子免费剩余时间大于某个阈值（6 hours）
+- hhclub
+    - 需要手动替换官种链接
+    - 种子状态非做种期（没被下载过）
+    - 种子具有`免费`标记
+    - 种子免费剩余时间大于某个阈值（6 hours）
+- leavesred
+    - 需要手动替换官种链接
+    - 跳过付费种子
+    - 种子状态非做种期（没被下载过）
+    - 种子具有`免费`标记
+    - 种子免费剩余时间大于某个阈值（5 hours）
 - opencd
     - 种子状态非做种期（没被下载过）
     - 种子具有`Free`、`2xFree`标记
     - 种子免费剩余时间大于某个阈值（2 hours）
-- agsvpt
-    - 自己选择官种链接
+- pterclub
+    - 需要手动替换官种链接
     - 种子状态非做种期（没被下载过）
     - 种子具有`Free`、`2xFree`标记
-    - 种子免费剩余时间大于某个阈值（4 hours）
-- hhclub
-    - 自己选择官种链接
+    - 种子免费剩余时间大于某个阈值（24 hours）
+- ptvicomo
+    - 需要手动替换官种链接
     - 种子状态非做种期（没被下载过）
-    - 种子具有`免费`标记
-    - 种子免费剩余时间大于某个阈值（6 hours）
-- pterclub
-    - 自己选择官种链接
-    - 种子状态非做种期（没被下载过）
-    - 种子具有`免费`标记
-    - 种子免费剩余时间大于某个阈值（6 hours）
+    - 种子具有`免费`、`2X免费`标记
+    - 种子免费剩余时间大于某个阈值（10 days）
+
+
+
 
 **条件**  
 包含不限于：
@@ -41,18 +57,25 @@
 2. 你可能需要提前设好代理的环境变量;
 3. 新建`_variables_站点.yaml`并修改其中的`cookie`、`passkey`、`download_path`等信息;
 4. 新建`_template_global.yaml`并修改其中的`qBittorrent`下载器等信息;
-5. 修改`站点_config.yaml`中的`urls`列表、`url_interval`（URL列表请求间隔）、`torrent_limited`（种子最大拉取数量），以及灵活修改你自己的条件;
+5. 修改`站点_config.yaml`中的`urls`列表、`url_interval`（URL列表请求间隔）、`limited_new`（种子最大新增数量），以及灵活修改你自己的条件;
 6. 下载种子：
     ```bash
     flexget -c opencd_config.yaml execute
     ```
-7. ~~下载完免费种子后，移入到qBittorrent的watch目录~~，目前种子会被自动推送到qBittorrent里，需要手动取消暂停(可修改`_template_global.yaml`中的`add_paused`参数来关闭暂停)。
+7. ~~下载完免费种子后，移入到qBittorrent的watch目录；~~
+8. 目前种子会被自动推送到qBittorrent里，需要手动取消暂停(可修改`_template_global.yaml`中的`add_paused`参数来关闭暂停)。手动取消暂停的好处是，可以在qBittorrent里将种子按大小排序，删除不必要的种子，防止拉取的官种过大。
+
 
 ## TODO
 
+- [ ] 修复agsvpt非站免时的deadline提取
 - [ ] 适配更多站点
 - [ ] 排除H&R种子
 - [ ] 应对站免时dom结构、css的变化
+
+## 已知🐛
+
+- agsvpt似乎不能由模板推送到qBittorrent，只能下载到本地，然后转移到qBittorrent的watch目录；
 
 ## 参考
 包含不限于：

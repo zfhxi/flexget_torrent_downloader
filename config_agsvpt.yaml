@@ -14,27 +14,28 @@ tasks:
           element_selector: 'a[href*="details.php"]'
           attribute: title
         url:
-          element_selector: 'a[href*="download.php"]'
+          element_selector: 'a[href^="download.php"]'
           attribute: href
         promotion:
           element_selector: 'img[class*="pro_free"]'
           attribute: alt
         deadline:
-          element_selector: 'td:has(>img[class*="pro_free"])>font>span'
+          element_selector: 'td:has(>img[class*="pro_free"])>font>span'  # 等待修复，目前处于站免期间，无法测试
           attribute: title
         progress:
           element_selector: 'div[title*="seeding"]'
           attribute: title
     no_entries_ok: yes
+    limit_new: 5
     if:
       - progress!='': reject
       - not promotion in ['Free','2X Free']: reject
       - promotion in ['Free','2X Free']:
-          if: 
-            - "deadline==''": accept
-            - "deadline!='' and deadline|parsedate - now < timedelta(hours=4)": reject
-            - "deadline!='' and deadline|parsedate - now > timedelta(hours=4)": accept
-
+         if:
+           - deadline=='': reject
+           - deadline!='':
+               if: 
+                 - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=6)': reject
+                 - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=6)': accept
     template:
       - global
-    # download: '{? download_path ?}'

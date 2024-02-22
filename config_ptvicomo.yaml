@@ -1,0 +1,44 @@
+variables: _variables_ptvicomo.yaml
+templates:
+  global:
+    include: _templates_global.yaml
+tasks:
+  ptvicomo-official-free:
+    html_rss_plus:
+      urls: 
+        - https://ptvicomo.net/torrents.php?tag_id=3 # 官种
+      user-agent: '{? headers.user_agent ?}'
+      cookie: '{? headers.cookie ?}'
+      params: '{? headers.params ?}'
+      url_interval: 2
+      root_element_selector: 'table.torrents tbody > tr:not(:first-child)'
+      fields:
+        title:
+          element_selector: 'table.torrentname a[href^="details.php"]'
+          attribute: title
+        url:
+          element_selector: 'a[href^="download.php"]'
+          attribute: href
+        promotion:
+          element_selector: 'table.torrentname font[class$="free"]'
+          attribute: textContent
+        deadline:
+          element_selector: 'table.torrentname b:has(>font[class$="free"])+font>span'
+          attribute: title
+        progress:
+          element_selector: 'div[title^="seeding"]'
+          attribute: title
+    no_entries_ok: yes
+    limit_new: 10
+    if:
+      - progress!='': reject
+      - not promotion in ['免费','2X免费']: reject
+      - promotion in ['免费','2X免费']:
+          if:
+            - deadline=='': reject
+            - deadline!='':
+                if: 
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(days=10)': reject
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(days=10)': accept
+    template:
+      - global
