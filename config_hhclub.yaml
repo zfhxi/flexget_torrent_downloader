@@ -1,0 +1,40 @@
+variables: _variables_hhclub.yaml
+tasks:
+  hhclub-official-free:
+    html_rss_plus:
+      urls: 
+        - https://hhanclub.top/torrents.php?tag_id3=1 # 官种
+      user-agent: '{? headers.user_agent ?}'
+      cookie: '{? headers.cookie ?}'
+      params: '{? headers.params ?}'
+      url_interval: 2
+      root_element_selector: 'div.torrent-table-sub-info'
+      fields:
+        title:
+          element_selector: 'div.torrent-table-for-spider-info>div>a[href^="details"]'
+          attribute: textContent
+        url:
+          element_selector: 'a[href^="download.php"]'
+          attribute: href
+        promotion:
+          element_selector: 'span[class*="promotion-tag-free"]'
+          attribute: textContent
+        deadline:
+          element_selector: 'div:has(>span[class*="promotion-tag-free"])+div>span>span'
+          attribute: title
+        progress:
+          element_selector: 'div[title^="seeding"]'
+          attribute: title
+    no_entries_ok: yes
+    if:
+      - progress!='': reject
+      - not promotion in ['免费']: reject
+      - promotion in ['免费']:
+          if: 
+            - "deadline==''": accept
+            - "deadline!='' and deadline|parsedate - now < timedelta(hours=6)": reject
+            - "deadline!='' and deadline|parsedate - now > timedelta(hours=6)": accept
+
+    template:
+      - global
+    # download: '{? download_path ?}'

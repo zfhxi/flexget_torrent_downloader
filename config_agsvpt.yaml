@@ -1,0 +1,40 @@
+variables: _variables_agsvpt.yaml
+tasks:
+  agsvpt-official-free:
+    html_rss_plus:
+      urls: 
+        - https://www.agsvpt.com/torrents.php?tag_id=3 # 官种
+      user-agent: '{? headers.user_agent ?}'
+      cookie: '{? headers.cookie ?}'
+      params: '{? headers.params ?}'
+      url_interval: 2
+      root_element_selector: 'table.torrents tbody > tr:not(:first-child)'
+      fields:
+        title:
+          element_selector: 'a[href*="details.php"]'
+          attribute: title
+        url:
+          element_selector: 'a[href*="download.php"]'
+          attribute: href
+        promotion:
+          element_selector: 'img[class*="pro_free"]'
+          attribute: alt
+        deadline:
+          element_selector: 'td:has(>img[class*="pro_free"])>font>span'
+          attribute: title
+        progress:
+          element_selector: 'div[title*="seeding"]'
+          attribute: title
+    no_entries_ok: yes
+    if:
+      - progress!='': reject
+      - not promotion in ['Free','2X Free']: reject
+      - promotion in ['Free','2X Free']:
+          if: 
+            - "deadline==''": accept
+            - "deadline!='' and deadline|parsedate - now < timedelta(hours=4)": reject
+            - "deadline!='' and deadline|parsedate - now > timedelta(hours=4)": accept
+
+    template:
+      - global
+    # download: '{? download_path ?}'

@@ -14,7 +14,22 @@
 - opencd
     - 种子状态非做种期（没被下载过）
     - 种子具有`Free`、`2xFree`标记
-    - 种子免费期与当前时间大于某个阈值（2 hours）
+    - 种子免费剩余时间大于某个阈值（2 hours）
+- agsvpt
+    - 自己选择官种链接
+    - 种子状态非做种期（没被下载过）
+    - 种子具有`Free`、`2xFree`标记
+    - 种子免费剩余时间大于某个阈值（4 hours）
+- hhclub
+    - 自己选择官种链接
+    - 种子状态非做种期（没被下载过）
+    - 种子具有`免费`标记
+    - 种子免费剩余时间大于某个阈值（6 hours）
+- pterclub
+    - 自己选择官种链接
+    - 种子状态非做种期（没被下载过）
+    - 种子具有`免费`标记
+    - 种子免费剩余时间大于某个阈值（6 hours）
 
 **条件**  
 包含不限于：
@@ -24,16 +39,20 @@
 ## 使用
 1. 安装依赖，参照`setup_env.sh`;
 2. 你可能需要提前设好代理的环境变量;
-3. 修改`_variables_站点.yaml`中的`cookie`、`passkey`、`download_path`等信息;
-4. 修改`站点_config.yaml`中的`urls`列表以及灵活修改你自己的条件;
-5. 下载种子：
+3. 新建`_variables_站点.yaml`并修改其中的`cookie`、`passkey`、`download_path`等信息;
+4. 新建`_template_global.yaml`并修改其中的`qBittorrent`下载器等信息;
+5. 修改`站点_config.yaml`中的`urls`列表、`url_interval`（URL列表请求间隔）、`torrent_limited`（种子最大拉取数量），以及灵活修改你自己的条件;
+6. 下载种子：
     ```bash
     flexget -c opencd_config.yaml execute
     ```
-6. 下载完免费种子后，移入到qBittorrent的watch目录
-    ```bash
-    sudo mv downloads/opencd/* /qb/watch
-    ```
+7. ~~下载完免费种子后，移入到qBittorrent的watch目录~~，目前种子会被自动推送到qBittorrent里，需要手动取消暂停(可修改`_template_global.yaml`中的`add_paused`参数来关闭暂停)。
+
+## TODO
+
+- [ ] 适配更多站点
+- [ ] 排除H&R种子
+- [ ] 应对站免时dom结构、css的变化
 
 ## 参考
 包含不限于：

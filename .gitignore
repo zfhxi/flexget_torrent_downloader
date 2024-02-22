@@ -1,6 +1,9 @@
 downloads
-_variables*
-!_variables_example*
+_*.yaml
+!_*_example.yaml
 *.log
 *.sqlite
 temp
+**/__pycache__
+**/*.pyc
+*ptvicomo*

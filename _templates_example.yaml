@@ -1,0 +1,15 @@
+# 剩余空间模板，当 path 对应的路径的剩余空间小于 space 规定的数值的时候停止 RSS 下载（未测试）
+free_space:
+  path: /data/disk2
+  space: 10240
+# 更多配置项参考：https://flexget.com/Plugins/qbittorrent
+qbittorrent:
+  path: /data/disk2/01Downloads/qbittorent/保种
+  host: 127.0.0.1
+  port: 28080
+  username: 
+  password: 
+  add_paused: True # 设为False则不会默认暂停
+  label: 保种
+  tags: 
+    - flexget

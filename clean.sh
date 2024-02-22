@@ -1,2 +1,8 @@
 #!/bin/bash
-rm -rf {flexget.log,*.sqlite,temp} && (yes | rm downloads/opencd/*)
+rm *.log
+rm *.sqlite
+rm -rf temp
+yes | rm downloads/opencd/*
+yes | rm downloads/agsvpt/*
+yes | rm downloads/pterclub/*
+yes | rm downloads/hhclub/*
