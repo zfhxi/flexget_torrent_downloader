@@ -50,12 +50,14 @@
 ## 使用
 1. 安装依赖，参照`setup_env.sh`;
 2. 你可能需要提前设好代理的环境变量;
-3. 新建`_variables_站点.yaml`并修改其中的`cookie`、`passkey`、`download_path`等信息;
+3. 新建`_variables_站点.yaml`并修改其中的`cookie`（建议开发者控制台里获取）、`passkey`等信息;
 4. 新建`_template_global.yaml`并修改其中的`qBittorrent`下载器等信息;
 5. 修改`站点_config.yaml`中的`urls`列表、`url_interval`（URL列表请求间隔）、`limited_new`（种子最大新增数量），以及灵活修改你自己的条件;
 6. 下载种子：
     ```bash
-    flexget -c opencd_config.yaml execute
+    flexget -c config_agsvpt.yaml execute 
+    # 或者执行配置文件中的选定任务
+    flexget -c config_agsvpt.yaml execute --task agsvpt-official-free
     ```
 7. ~~下载完免费种子后，移入到qBittorrent的watch目录；~~
 8. 目前种子会被自动推送到qBittorrent里，需要手动取消暂停(可修改`_template_global.yaml`中的`add_paused`参数来关闭暂停)。手动取消暂停的好处是，可以在qBittorrent里将种子按大小排序，删除不必要的种子，防止拉取的官种过大。
