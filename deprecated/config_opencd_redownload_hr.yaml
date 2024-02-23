@@ -1,5 +1,8 @@
 # 重新下已完成但HR没合格的种子
 variables: _variables_opencd.yaml
+templates:
+  global:
+    include: _templates_global.yaml
 tasks:
   opencd-free:
     html_rss_plus:
@@ -31,6 +34,4 @@ tasks:
       - "not 'progress_completed_hr' in progress": reject
       - "'progress_completed_hr' in progress": accept
 
-    # template:
-      # - global
     download: ./downloads

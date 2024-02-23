@@ -1,4 +1,7 @@
 variables: _variables_opencd.yaml
+templates:
+  global:
+    include: _templates_global.yaml
 tasks:
   opencd-free:
     html_rss_plus:

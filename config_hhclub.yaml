@@ -1,4 +1,7 @@
 variables: _variables_hhclub.yaml
+templates:
+  global:
+    include: _templates_global.yaml
 tasks:
   hhclub-official-free:
     html_rss_plus:

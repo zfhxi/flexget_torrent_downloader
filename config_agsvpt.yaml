@@ -1,9 +1,19 @@
 variables: _variables_agsvpt.yaml
+templates:
+  global:
+    include: _templates_global.yaml
 tasks:
   agsvpt-official-free:
     html_rss_plus:
       urls: 
-        - https://www.agsvpt.com/torrents.php?tag_id=3 # 官种
+        #- https://www.agsvpt.com/torrents.php?tag_id=3 # 官种
+        - https://www.agsvpt.com/torrents.php?cat=419 # 以下是短剧，所有短剧都是冰种，所以暂时不写官种过滤规则
+        - https://www.agsvpt.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&cat=419&page=1
+        - https://www.agsvpt.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&cat=419&page=2
+        - https://www.agsvpt.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&cat=419&page=3
+        - https://www.agsvpt.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&cat=419&page=4
+        - https://www.agsvpt.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&cat=419&page=5
+        - https://www.agsvpt.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&cat=419&page=6
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
@@ -26,13 +36,13 @@ tasks:
           element_selector: 'div[title*="seeding"]'
           attribute: title
     no_entries_ok: yes
-    limit_new: 5
+    limit_new: 200
     if:
       - progress!='': reject
-      - not promotion in ['Free','2X Free']: reject
-      - promotion in ['Free','2X Free']:
+      - not promotion in ['Free']: reject
+      - promotion in ['Free']:
          if:
-           - deadline=='': reject
+           - deadline=='': accept
            - deadline!='':
                if: 
                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=6)': reject
