@@ -7,6 +7,8 @@ tasks:
     html_rss_plus:
       urls: 
         - https://pterclub.com/torrents.php?tag_internal=yes # 官种
+        - https://pterclub.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&page=1&tag_internal=yes
+        - https://pterclub.com/torrents.php?inclbookmarked=0&incldead=1&spstate=0&page=2&tag_internal=yes
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
@@ -28,9 +30,13 @@ tasks:
         progress: # 注意该值是一个列表
           element_selector: 'img[class*="progbar"]'
           attribute: class
+        seeders: # 猫站官种做
+          element_selector: 'a[href$="#seeders"]'
+          attribute: textContent
     no_entries_ok: yes
-    limit_new: 10
+    # limit_new: 50
     if:
+      - 'seeders|int > 30': reject
       - progress!='': reject
       - not promotion in ['Free','2X Free']: reject
       - promotion in ['Free','2X Free']:
@@ -38,8 +44,9 @@ tasks:
             - deadline=='': reject
             - deadline!='':
                 if: 
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=24)': reject
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=24)': accept
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=10)': reject
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=10)': accept
+      # 请在qbitorrent里删除体积 < 100M 的种子！
 
     template:
       - global
