@@ -1,5 +1,5 @@
 headers:
   user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36'
-  cookie: ''
-  params: ''
-download_path: ''
+  cookie: ''   # 开发者工具中复制出来的cookie
+  params: '&passkey=yourpasskey'   # pt站点里查看自己的passkey，或者复制种子下载链接中的passkey
+download_path: ''   # 若不需要将种子下载到本地，而是直接推送到qbittorrent，可以不填写

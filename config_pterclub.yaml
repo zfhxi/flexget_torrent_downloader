@@ -12,15 +12,17 @@ tasks:
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
-      url_interval: 2
+      url_interval: 2  # url爬取间隔
       root_element_selector: 'table.torrents tbody > tr:not(:first-child)'
       fields:
+        # title和url是必须的字段，其他字段可以根据需要自行添加
         title:
           element_selector: 'a[href*="details.php"]'
           attribute: title
         url:
           element_selector: 'a[href*="download.php"]'
           attribute: href
+        # 以下是可选字段
         promotion:
           element_selector: 'img[class*="pro_free"]'
           attribute: alt
@@ -30,7 +32,7 @@ tasks:
         progress: # 注意该值是一个列表
           element_selector: 'img[class*="progbar"]'
           attribute: class
-        seeders: # 猫站官种做
+        seeders: # 做种人数
           element_selector: 'a[href$="#seeders"]'
           attribute: textContent
     no_entries_ok: yes

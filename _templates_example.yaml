@@ -10,6 +10,6 @@ qbittorrent:
   username: 
   password: 
   add_paused: True # 设为False则不会默认暂停
-  label: 保种
+  label: 保种  # qbittorrent里的分类
   tags: 
-    - flexget
+    - flexget  # 种子标签
