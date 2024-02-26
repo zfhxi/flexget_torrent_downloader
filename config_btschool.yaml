@@ -1,0 +1,60 @@
+variables: _variables_btschool.yaml
+templates:
+  global:
+    include: _templates_global.yaml
+tasks:
+  btschool-free:
+    html_rss_plus:
+      urls: 
+        # 免费种子
+        - https://pt.btschool.club/torrents.php?spstate=2
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=1
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=2
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=3
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=4
+        # 2x Free种子
+        - https://pt.btschool.club/torrents.php?spstate=4
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=1
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=2
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=3
+        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=4
+      user-agent: '{? headers.user_agent ?}'
+      cookie: '{? headers.cookie ?}'
+      params: '{? headers.params ?}'
+      url_interval: 5
+      root_element_selector: 'table.torrents tbody > tr:not(:first-child)'
+      fields:
+        title:
+          element_selector: 'table.torrents td.embedded a[href^="details.php"]'
+          attribute: title
+        url:
+          element_selector: 'a[href*="download.php"]'
+          attribute: href
+        promotion:
+          element_selector: 'img[class*="pro_free"]'
+          attribute: alt
+        deadline:
+          element_selector: 'img[class*="pro_free"]+font>span'
+          attribute: title
+        progress: # 注意该值是一个列表
+          element_selector: 'div.progress'
+          attribute: class
+        official_tag: # 官种标签
+          element_selector: 'img[class*="pro_free"]~span.label-primary'
+          attribute: textContent
+    no_entries_ok: yes
+    # limit_new: 30
+    if:
+      - progress!='': reject
+      - official_tag!='官方': reject
+      - not promotion in ['Free','2X Free']: reject
+      - promotion in ['Free','2X Free']:
+          if:
+            - deadline=='': accept # 2x Free没有截止日期
+            - deadline!='':
+                if: 
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=6)': reject
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=6)': accept
+
+    template:
+      - global

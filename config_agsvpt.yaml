@@ -42,7 +42,7 @@ tasks:
       - not promotion in ['Free']: reject
       - promotion in ['Free']:
          if:
-           - deadline=='': accept
+           - deadline=='': reject
            - deadline!='':
                if: 
                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=6)': reject

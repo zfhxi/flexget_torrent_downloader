@@ -8,6 +8,9 @@ tasks:
       urls: 
         - https://leaves.red/special.php?tag_id=3 # 官种
         - https://leaves.red/special.php?inclbookmarked=0&incldead=1&spstate=0&tag_id=3&page=1
+        - https://leaves.red/special.php?inclbookmarked=0&incldead=1&spstate=0&tag_id=3&page=2
+        - https://leaves.red/special.php?inclbookmarked=0&incldead=1&spstate=0&tag_id=3&page=3
+        - https://leaves.red/special.php?inclbookmarked=0&incldead=1&spstate=0&tag_id=3&page=4
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
@@ -37,10 +40,10 @@ tasks:
     if:
       - needpay!='': reject
       - progress!='': reject
-      - not promotion in ['Free']: reject
-      - promotion in ['Free']:
+      - not promotion in ['Free','2X Free']: reject
+      - promotion in ['Free','2X Free']:
           if:
-            - deadline=='': reject
+            - deadline=='': accept  # 红叶的Free是没有截止日期的?
             - deadline!='':
                 if: 
                   - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=5)': reject
