@@ -29,7 +29,7 @@ tasks:
           element_selector: 'div[title^="seeding"]'
           attribute: title
     no_entries_ok: yes
-    limit_new: 10
+    #limit_new: 10
     if:
       - progress!='': reject
       - not promotion in ['免费']: reject
@@ -38,7 +38,7 @@ tasks:
             - deadline=='': reject
             - deadline!='':
                 if: 
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=6)': reject
-                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=6)': accept
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() < timedelta(hours=8)': reject
+                  - '(deadline+"+08:00")|parsedate - now.astimezone() > timedelta(hours=8)': accept
     template:
       - global
