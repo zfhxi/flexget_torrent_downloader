@@ -6,18 +6,19 @@ tasks:
   btschool-free:
     html_rss_plus:
       urls: 
+        - https://pt.btschool.club/torrents.php
         # 免费种子
-        - https://pt.btschool.club/torrents.php?spstate=2
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=1
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=2
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=3
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=4
-        # 2x Free种子
-        - https://pt.btschool.club/torrents.php?spstate=4
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=1
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=2
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=3
-        - https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=4
+        #- https://pt.btschool.club/torrents.php?spstate=2
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=1
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=2
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=3
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=2&page=4
+        ## 2x Free种子
+        #- https://pt.btschool.club/torrents.php?spstate=4
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=1
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=2
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=3
+        #- https://pt.btschool.club/torrents.php?inclbookmarked=0&incldead=1&spstate=4&page=4
       user-agent: '{? headers.user_agent ?}'
       cookie: '{? headers.cookie ?}'
       params: '{? headers.params ?}'
@@ -46,7 +47,7 @@ tasks:
     # limit_new: 30
     if:
       - progress!='': reject
-      - official_tag!='官方': reject
+      - official_tag!='官方': reject  # 取消该行注释选择官种，否则只是免费种
       - not promotion in ['Free','2X Free']: reject
       - promotion in ['Free','2X Free']:
           if:
